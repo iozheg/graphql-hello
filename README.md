@@ -27,3 +27,7 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+start postrges in docker:
+sudo docker run --rm -P --name postgres-graphql -e POSTGRES_PASSWORD=123456 -d -p 5432:5432 postgres
