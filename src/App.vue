@@ -1,28 +1,47 @@
-<template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
-</template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Users from './components/Users.vue';
+import UsersTasks from './components/UserTasks.vue';
+import db from "./db";
 
 export default {
   name: 'app',
-  components: {
-    HelloWorld
+  provide() {
+    return {
+      db: db
+    }
+  },
+  components: { Users, UsersTasks },
+  data() {
+    return {
+      selectedUser: undefined,
+    };
+  },
+
+  methods: {
+    selectUser(id) {
+      this.selectedUser = Number(id);
+    }
   }
 }
 </script>
 
+<template>
+  <div id="app">
+    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
+    Users:
+    <Users @selectUser="selectUser" />
+    Selected user: {{selectedUser}} and his tasks:
+    <UsersTasks :userId="selectedUser" />
+  </div>
+</template>
+
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
+  /* -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 60px; */
 }
 </style>

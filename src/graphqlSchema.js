@@ -8,6 +8,7 @@ const {
    GraphQLObjectType,
    GraphQLID,
    GraphQLString,
+   GraphQLInt,
    GraphQLBoolean,
    GraphQLList,
    GraphQLSchema
@@ -28,12 +29,12 @@ const TaskType = new GraphQLObjectType({
    fields: {
       id: { type: GraphQLID },
       name: { type: GraphQLString },
-      executer: {
+      creator: {
         type: PersonType,
         resolve(parentValue, args) {
            const query = `SELECT * FROM public."user" WHERE
-           id=${parentValue.executer} OR id=${parentValue.creator}`;
-           return db.conn.many(query)
+           id=${parentValue.creator}`;
+           return db.conn.one(query)
               .then(data => {
                  return data;
               })
@@ -41,7 +42,23 @@ const TaskType = new GraphQLObjectType({
                  return 'The error is', err;
               });
         }
-      }
+      },
+      executor: {
+        type: PersonType,
+        resolve(parentValue, args) {
+           const query = `SELECT * FROM public."user" WHERE
+           id=${parentValue.executor}`;
+           return db.conn.one(query)
+              .then(data => {
+                 return data;
+              })
+              .catch(err => {
+                 return 'The error is', err;
+              });
+        }
+      },
+      start_date: { type: GraphQLString },
+      end_date: { type: GraphQLString },
    }
 })
 
@@ -93,10 +110,14 @@ const RootQuery = new GraphQLObjectType({
           });
       }
     },
-    tasks: {
+    userTasks: {
       type: new GraphQLList(TaskType),
+      args: { userId: { type: GraphQLID } },
       resolve(parentValue, args) {
-        const query = `SELECT * FROM public."task"`;
+        const condition = args.userId
+          ? `WHERE creator=${args.userId} OR executor=${args.userId}`
+          : "";
+        const query = `SELECT * FROM public."task" ${condition}`;
         return db.conn.many(query)
           .then(data => {
               return data;
