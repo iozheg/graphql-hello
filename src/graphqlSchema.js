@@ -6,12 +6,14 @@ db.conn = pgp(connectionString);
 
 const {
    GraphQLObjectType,
+   GraphQLInputObjectType,
    GraphQLID,
    GraphQLString,
    GraphQLInt,
    GraphQLBoolean,
    GraphQLList,
-   GraphQLSchema
+   GraphQLSchema,
+   GraphQLNonNull
 } = graphql;
 
 const PersonType = new GraphQLObjectType({
@@ -128,8 +130,46 @@ const RootQuery = new GraphQLObjectType({
       }
     }
   }
+});
+
+
+const PersonInputType = new GraphQLInputObjectType({
+  name: 'PersonInput',
+  fields: {
+     first_name: { type: GraphQLString },
+     last_name: { type: GraphQLString },
+     email: { type: GraphQLString },
+  }
 })
 
+const RootMutation = new GraphQLObjectType({
+  name: 'RootMutationType',
+  fields: {
+    user: {
+      type: PersonType,
+      args: {
+        input: {
+          type: new GraphQLNonNull(PersonInputType)
+        }
+      },
+      resolve(parentValue, args) {
+        const keys = Object.keys(args.input);
+        const values = Object.values(args.input);
+        const query = `INSERT INTO public."user"
+          (${keys.join(",")}) VALUES ('${values.join("','")}')`;
+        return db.conn.none(query)
+          .then(data => {
+              return args.input;
+          })
+          .catch(err => {
+              return 'The error is', err;
+          });
+      }
+    }
+  }
+});
+
 module.exports = new GraphQLSchema({
-   query: RootQuery
+   query: RootQuery,
+   mutation: RootMutation
 })

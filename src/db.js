@@ -40,4 +40,20 @@ export default {
     });
     return result.data.userTasks;
   },
+  createUser: async function ({ first_name, last_name, email }) {
+    const createQuery = `mutation user($input: PersonInput!) {
+      user(input: $input) {
+        id
+        first_name
+        last_name
+        email
+      }
+    }`;
+
+    const result = await fetchGQL({
+      query: createQuery,
+      variables: { input: { first_name, last_name, email: email } }
+    });
+    return result.data.user;
+  }
 };
