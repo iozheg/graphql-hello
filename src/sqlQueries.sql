@@ -1,12 +1,14 @@
 -- Database: graphql-test
 -- DROP DATABASE \"graphql-test\";
-CREATE DATABASE \"graphql-test\"
+CREATE DATABASE "graphql-test"
     WITH OWNER = postgres
     ENCODING = 'UTF8'
     LC_COLLATE = 'en_US.utf8'
     LC_CTYPE = 'en_US.utf8'
     TABLESPACE = pg_default
     CONNECTION LIMIT = -1;
+
+\c "graphql-test";
 
 CREATE TABLE public."user"
 (
@@ -51,7 +53,7 @@ WITH (
 ALTER TABLE public.task
     OWNER to postgres;
 
-insert into public."user" (first_name, last_name, email) values ('ivan', 'ivanov', 'i@i.i')
-insert into public."user" (first_name, last_name, email) values ('petr', 'petrov', 'p@p.p')
-insert into public."task" (name, creator, executor) values ('first', 1, 2)
-insert into public."task" (name, creator, executor) values ('second', 1, 1)
+insert into public."user" (first_name, last_name, email) values ('ivan', 'ivanov', 'i@i.i');
+insert into public."user" (first_name, last_name, email) values ('petr', 'petrov', 'p@p.p');
+insert into public."task" (name, creator, executor) values ('first', 1, 2);
+insert into public."task" (name, creator, executor) values ('second', 1, 1);
