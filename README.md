@@ -29,5 +29,7 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
-start postrges in docker:
-sudo docker run --rm -P --name postgres-graphql -e POSTGRES_PASSWORD=123456 -d -p 5432:5432 postgres
+1. start postrges in docker:
+`sudo docker run --rm -P --name postgres-graphql -e POSTGRES_PASSWORD=123456 -d -p 5432:5432 postgres`
+2. execute SQL `psql -h localhost -p 5432 -U postgres -f projects/graphql-hello/src/sqlQueries.sql`
+3. start server `node src/server.js`
