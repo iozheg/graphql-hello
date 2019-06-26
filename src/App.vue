@@ -28,9 +28,8 @@ export default {
 <template>
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-    Users:
     <Users @selectUser="selectUser" />
-    Selected user: {{selectedUser}} and his tasks:
+    <br>
     <UsersTasks :userId="selectedUser" />
   </div>
 </template>

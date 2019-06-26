@@ -8,6 +8,7 @@ export default {
       newUserFName: "",
       newUserLName: "",
       newUserEmail: "",
+      selectedUser: undefined,
     };
   },
   async mounted() {
@@ -16,6 +17,7 @@ export default {
 
   methods: {
     selectUser(id) {
+      this.selectedUser = id;
       this.$emit("selectUser", id);
     },
     async createUser() {
@@ -33,39 +35,48 @@ export default {
 </script>
 
 <template>
-  <div class="user-list">
-    <div class="user"
-      v-for="user in userList"
-      :key="user.id"
-      @click="selectUser(user.id)"
-    >
-      {{user.id}} - {{user.last_name}} {{user.first_name}} {{user.email}}
+  <div class="users-component">
+    <div class="user-list list-group">
+      <span class="breadcrumb">Users:</span>
+      <div class="user list-group-item"
+        v-for="user in userList"
+        :key="user.id"
+        @click="selectUser(user.id)"
+      >
+        {{user.id}} - {{user.last_name}} {{user.first_name}} {{user.email}}
+      </div>
+      Selected user: {{selectedUser}}
     </div>
-    <div class="create-user">
-      Create user: <br>
-      <label class="create-input">first name <input type="text" v-model="newUserFName" /></label>
-      <label class="create-input">last name <input type="text" v-model="newUserLName" /></label>
-      <label class="create-input">email <input type="text" v-model="newUserEmail" /></label>
-      <button @click="createUser">Create</button>
-    </div>
+    <form class="create-user">
+      <span class="breadcrumb">Create user:</span>
+      <div class="form-group">
+        <label class="create-input">first name</label>
+        <input class="form-control form-control-sm" type="text" v-model="newUserFName" />
+        <label class="create-input">last name</label>
+        <input class="form-control form-control-sm" type="text" v-model="newUserLName" />
+        <label class="create-input">email</label>
+        <input class="form-control form-control-sm" type="text" v-model="newUserEmail" />
+      </div>
+      <button class="btn btn-primary" @click="createUser">Create</button>
+    </form>
   </div>
 </template>
 
 <style>
-.user-list {
+.users-component {
+  display: flex;
   width: 100%;
+}
+.user-list {
+  width: 50%;
   height: 100%;
 }
 .user {
   cursor: pointer;
-  height: 30px;
-  border: 1px solid gray;
-  padding: 8px 5px 0 5px;
-  margin-bottom: 3px;
-  text-align: left;
 }
 .create-user {
-  margin: 10px 0;
+  width: 50%;
+  margin: 0 20px;
 }
 .create-input {
   height: 25px;
