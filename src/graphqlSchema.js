@@ -141,6 +141,16 @@ const PersonInputType = new GraphQLInputObjectType({
      email: { type: GraphQLString },
   }
 })
+const TaskInputType = new GraphQLInputObjectType({
+  name: 'TaskInput',
+  fields: {
+     name: { type: GraphQLString },
+     creator: { type: GraphQLInt },
+     executor: { type: GraphQLInt },
+     start_date: { type: GraphQLString },
+     end_date: { type: GraphQLString },
+  }
+})
 
 const RootMutation = new GraphQLObjectType({
   name: 'RootMutationType',
@@ -157,6 +167,28 @@ const RootMutation = new GraphQLObjectType({
         const values = Object.values(args.input);
         const query = `INSERT INTO public."user"
           (${keys.join(",")}) VALUES ('${values.join("','")}')`;
+        return db.conn.none(query)
+          .then(data => {
+              return args.input;
+          })
+          .catch(err => {
+              return 'The error is', err;
+          });
+      }
+    }, 
+    task: {
+      type: TaskType,
+      args: {
+        input: {
+          type: new GraphQLNonNull(TaskInputType)
+        }
+      },
+      resolve(parentValue, args) {
+        const keys = Object.keys(args.input);
+        const values = Object.values(args.input);
+        const query = `INSERT INTO public."task"
+          (${keys.join(",")}) VALUES ('${values.join("','")}')`;
+        console.log(query);
         return db.conn.none(query)
           .then(data => {
               return args.input;
