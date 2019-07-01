@@ -16,6 +16,32 @@ const {
    GraphQLNonNull
 } = graphql;
 
+async function getUserById(id) {
+  const query = `SELECT * FROM public."user" WHERE id=${id}`;
+  console.log('Query', query)
+  return db.conn.one(query)
+     .then(data => {
+        return data;
+     })
+     .catch(err => {
+        console.log('The error is', err)
+        return 'The error is', err;
+     });
+}
+
+async function getProjectById(id) {
+  const query = `SELECT * FROM public."project" WHERE id=${id}`;
+  console.log('Query', query)
+  return db.conn.one(query)
+     .then(data => {
+        return data;
+     })
+     .catch(err => {
+        console.log('The error is', err)
+        return 'The error is', err;
+     });
+}
+
 const PersonType = new GraphQLObjectType({
    name: 'Person',
    fields: {
@@ -26,6 +52,20 @@ const PersonType = new GraphQLObjectType({
    }
 })
 
+const ProjectType = new GraphQLObjectType({
+  name: 'Project',
+  fields: {
+    id: { type: GraphQLString },
+    name: { type: GraphQLString },
+    creator: {
+      type: PersonType,
+      resolve(parentValue) {
+        return getUserById(parentValue.creator);
+      }
+    }
+  }
+});
+
 const TaskType = new GraphQLObjectType({
    name: 'Task',
    fields: {
@@ -34,29 +74,19 @@ const TaskType = new GraphQLObjectType({
       creator: {
         type: PersonType,
         resolve(parentValue, args) {
-           const query = `SELECT * FROM public."user" WHERE
-           id=${parentValue.creator}`;
-           return db.conn.one(query)
-              .then(data => {
-                 return data;
-              })
-              .catch(err => {
-                 return 'The error is', err;
-              });
+          return getUserById(parentValue.creator);
         }
       },
       executor: {
         type: PersonType,
         resolve(parentValue, args) {
-           const query = `SELECT * FROM public."user" WHERE
-           id=${parentValue.executor}`;
-           return db.conn.one(query)
-              .then(data => {
-                 return data;
-              })
-              .catch(err => {
-                 return 'The error is', err;
-              });
+          return getUserById(parentValue.executor);
+        }
+      },
+      project: {
+        type: ProjectType,
+        resolve(parentValue) {
+          return getProjectById(parentValue.project);
         }
       },
       start_date: { type: GraphQLString },
@@ -71,16 +101,7 @@ const RootQuery = new GraphQLObjectType({
       type: PersonType,
       args: { id: { type: GraphQLID } },
       resolve(parentValue, args) {
-        const query = `SELECT * FROM public."user" ${args.id}`;
-        console.log('Query', query)
-        return db.conn.one(query)
-          .then(data => {
-              return data;
-          })
-          .catch(err => {
-              console.log('The error is', err)
-              return 'The error is', err;
-          });
+        return getUserById(args.id);
       }
     },
     persons: {
@@ -97,6 +118,29 @@ const RootQuery = new GraphQLObjectType({
               return 'The error is', err;
           });
       }
+    },
+    project: {
+      type: ProjectType,
+      args: { id: { type: GraphQLID }},
+      resolve(parentValue, args) {
+        return getProjectById(args.id);
+      }
+    },
+    projects: {
+      type: new GraphQLList(ProjectType),
+      args: { userId: { type: GraphQLID }},
+      resolve(parentValue, args) {
+        const condition = args.userId
+          ? `WHERE creator=${args.userId}`
+          : "";
+        const query = `SELECT * FROM public."project" ${condition}`;
+        return db.conn.many(query)
+          .then(data => {
+              return data;
+          })
+          .catch(err => {
+              return 'The error is', err;
+          });}
     },
     task: {
       type: TaskType,
