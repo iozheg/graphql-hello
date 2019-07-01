@@ -1,7 +1,7 @@
 import { createApolloFetch } from 'apollo-fetch';
 
 const fetchGQL = createApolloFetch({
-  uri: 'http://0.0.0.0:8080/graphql'
+  uri: `http://0.0.0.0:${window.location.port}/graphql`
 });
 
 export default {
