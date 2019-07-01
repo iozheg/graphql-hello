@@ -12,11 +12,12 @@ export default {
   methods: {
     async createProject(event) {
       event.preventDefault();
+      this.creator = Number(this.creator);
       const project = await this.db.createProject({
         name: this.projectName,
         creator: this.creator,
       });
-      if (project.first_name === this.projectName) {
+      if (project.name === this.projectName) {
         alert('Project created');
       }
     }

@@ -185,6 +185,14 @@ const PersonInputType = new GraphQLInputObjectType({
      email: { type: GraphQLString },
   }
 })
+const ProjectInputType = new GraphQLInputObjectType({
+  name: 'ProjectInput',
+  fields: {
+    name: { type: GraphQLString },
+    creator: { type: GraphQLInt },
+  }
+});
+
 const TaskInputType = new GraphQLInputObjectType({
   name: 'TaskInput',
   fields: {
@@ -220,7 +228,29 @@ const RootMutation = new GraphQLObjectType({
               return 'The error is', err;
           });
       }
-    }, 
+    },
+    project: {
+      type: ProjectType,
+      args: {
+        input: {
+          type: new GraphQLNonNull(ProjectInputType),
+        }
+      },
+      resolve(parentValue, args) {
+        const keys = Object.keys(args.input);
+        const values = Object.values(args.input);
+        const query = `INSERT INTO public."project"
+          (${keys.join(",")}) VALUES ('${values.join("','")}')`;
+        console.log(query);
+        return db.conn.none(query)
+          .then(data => {
+              return args.input;
+          })
+          .catch(err => {
+              return 'The error is', err;
+          });
+      }
+    },
     task: {
       type: TaskType,
       args: {

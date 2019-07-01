@@ -79,7 +79,22 @@ export default {
     });
     return result.data.user;
   },
-  createTask: async function ({ name, creator, executor, start_date, end_date }) {
+
+  createProject: async function ({ name, creator}) {
+    const createQuery = `mutation project($input: ProjectInput!) {
+      project(input: $input) {
+        name
+      }
+    }`;
+
+    const result = await fetchGQL({
+      query: createQuery,
+      variables: { input: { name, creator } }
+    });
+    return result.data.task;
+  },
+
+  createTask: async function ({ name, creator, executor, project, start_date, end_date }) {
     const createQuery = `mutation task($input: TaskInput!) {
       task(input: $input) {
         name

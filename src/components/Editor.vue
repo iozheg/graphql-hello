@@ -1,28 +1,20 @@
 <script>
 import CreateUser from './CreateUser.vue';
+import CreateProject from './CreateProject.vue';
 import CreateTask from './CreateTask.vue';
 
 export default {
   name: 'Editor',
-  components: { CreateUser, CreateTask },
+  components: { CreateUser, CreateProject, CreateTask },
 }
 </script>
 
 <template>
-  <div id="overview">
+  <div id="editor">
     <create-user />
+    <br>
+    <create-project />
     <br>
     <create-task />
   </div>
 </template>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  /* -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px; */
-}
-</style>
