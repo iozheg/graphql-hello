@@ -191,6 +191,7 @@ const TaskInputType = new GraphQLInputObjectType({
      name: { type: GraphQLString },
      creator: { type: GraphQLInt },
      executor: { type: GraphQLInt },
+     project: { type: GraphQLInt },
      start_date: { type: GraphQLString },
      end_date: { type: GraphQLString },
   }

@@ -1,10 +1,11 @@
 <script>
 import Users from './Users.vue';
+import Projects from './Projects.vue'
 import UsersTasks from './UserTasks.vue';
 
 export default {
   name: 'Overview',
-  components: { Users, UsersTasks },
+  components: { Users, Projects, UsersTasks },
   data() {
     return {
       selectedUser: undefined,
@@ -22,6 +23,8 @@ export default {
 <template>
   <div id="overview">
     <Users @selectUser="selectUser" />
+    <br>
+    <projects :userId="selectedUser" />
     <br>
     <UsersTasks :userId="selectedUser" />
   </div>

@@ -19,6 +19,25 @@ export default {
     const result = await fetchGQL({query});
     return result.data;
   },
+
+  getUserProjects: async function (id) {
+    const projectByUser = `query projects($id: ID) {
+      projects(userId: $id) {
+        id
+        name
+        creator {
+          last_name
+        }
+      }
+    }`;
+
+    const result = await fetchGQL({
+      query: projectByUser,
+      variables: { id: id }
+    });
+    return result.data.projects;
+  },
+
   getUserTasks: async function (id) {
     const taskByUser = `query userTasks($id: ID) {
       userTasks(userId: $id) {
@@ -30,6 +49,9 @@ export default {
         executor {
           last_name
         }
+        project {
+          name
+        }
         start_date
         end_date
       }
@@ -40,6 +62,7 @@ export default {
     });
     return result.data.userTasks;
   },
+
   createUser: async function ({ first_name, last_name, email }) {
     const createQuery = `mutation user($input: PersonInput!) {
       user(input: $input) {
@@ -65,7 +88,7 @@ export default {
 
     const result = await fetchGQL({
       query: createQuery,
-      variables: { input: { name, creator, executor, start_date, end_date } }
+      variables: { input: { name, creator, executor, project, start_date, end_date } }
     });
     return result.data.task;
   }
