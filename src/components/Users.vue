@@ -5,9 +5,6 @@ export default {
   data() {
     return {
       userList: [],
-      newUserFName: "",
-      newUserLName: "",
-      newUserEmail: "",
       selectedUser: undefined,
     };
   },
@@ -20,16 +17,6 @@ export default {
       this.selectedUser = id;
       this.$emit("selectUser", id);
     },
-    async createUser() {
-      const newUser = await this.db.createUser({
-        first_name: this.newUserFName,
-        last_name: this.newUserLName,
-        email: this.newUserEmail,
-      });
-      if (newUser.first_name === this.newUserFName) {
-        this.userList = (await this.db.fetchAllPersons()).persons;
-      }
-    }
   }
 }
 </script>
@@ -47,18 +34,6 @@ export default {
       </div>
       Selected user: {{selectedUser}}
     </div>
-    <form class="create-user">
-      <span class="breadcrumb">Create user:</span>
-      <div class="form-group">
-        <label class="create-input">first name</label>
-        <input class="form-control form-control-sm" type="text" v-model="newUserFName" />
-        <label class="create-input">last name</label>
-        <input class="form-control form-control-sm" type="text" v-model="newUserLName" />
-        <label class="create-input">email</label>
-        <input class="form-control form-control-sm" type="text" v-model="newUserEmail" />
-      </div>
-      <button class="btn btn-primary" @click="createUser">Create</button>
-    </form>
   </div>
 </template>
 
@@ -66,21 +41,14 @@ export default {
 .users-component {
   display: flex;
   width: 100%;
+  padding: 10px 20px;
 }
 .user-list {
-  width: 50%;
+  width: 100%;
   height: 100%;
 }
 .user {
   cursor: pointer;
-}
-.create-user {
-  width: 50%;
-  margin: 0 20px;
-}
-.create-input {
-  height: 25px;
-  padding: 3px;
 }
 </style>
 
